@@ -4,19 +4,26 @@ import BASE_URL from './BASE_URL.js';
 import qs from 'qs';
 import NProgress from 'nprogress';
 import router from '@/router/index.js';
+import store from '@/store/index.js';
+
+let localUserInfo = window.localStorage.getItem('userInfo');
+localUserInfo = JSON.parse(localUserInfo);
+let userInfo = store.state.userInfo;
+
+let token = userInfo.token || localUserInfo.token;
 
 const instance = axios.create({
 	baseURL: BASE_URL,
 	timeout: 5000,
 	headers: {
-		'Content-Type': 'application/json'
+		'Content-Type': 'application/json',
+		Authorization: token,
 	},
 });
 
 // 添加请求拦截器
 instance.interceptors.request.use( res => {
     // 发送前做的事
-	
 	if(res.progress) {
 		NProgress.inc();
 	}
